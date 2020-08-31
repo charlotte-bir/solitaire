@@ -43,7 +43,10 @@ h1{
 #donne{
     width: 71px;
     height: 100%;
-    background-color: chartreuse;
+}
+
+#donne>div{
+    position: absolute;
 }
 
 #bottom{
@@ -62,9 +65,20 @@ h1{
 #bottom>div>div{
     width: 71px;
     height: 97px;
-    background-color: chartreuse;
-    border: black 1px solid;
     position: absolute;
+}
+
+.card{
+    width: 71px;
+    height: 97px;
+}
+
+.cardBack{
+    z-index: -1;
+    position: absolute;
+    background: url("../Images/cardback.jpg");
+    width: 100%;
+    height: 100%;
 }
 
 .ace_clubs {
