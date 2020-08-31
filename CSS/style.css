@@ -44,6 +44,10 @@ h1{
     background-position: center;
 }
 
+#slots>div>div{
+    position: absolute;
+}
+
 #donne{
     width: 71px;
     height: 100%;
