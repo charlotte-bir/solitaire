@@ -8,58 +8,58 @@ function cardGeneration(){
 }
 
 let cardCorrespondance=[
-    "ace_clubs",
-    "two_clubs",
-    "three_clubs",
-    "four_clubs",
-    "five_clubs",
-    "six_clubs",
-    "seven_clubs",
-    "eight_clubs",
-    "nine_clubs",
-    "ten_clubs",
-    "jack_clubs",
-    "queen_clubs",
-    "king_clubs",
-    "ace_hearts",
-    "two_hearts",
-    "three_hearts",
-    "four_hearts",
-    "five_hearts",
-    "six_hearts",
-    "seven_hearts",
-    "eight_hearts",
-    "nine_hearts",
-    "ten_hearts",
-    "jack_hearts",
-    "queen_hearts",
-    "king_hearts",
-    "ace_spades",
-    "two_spades",
-    "three_spades",
-    "four_spades",
-    "five_spades",
-    "six_spades",
-    "seven_spades",
-    "eight_spades",
-    "nine_spades",
-    "ten_spades",
-    "jack_spades",
-    "queen_spades",
-    "king_spades",
-    "ace_diamonds",
-    "two_diamonds",
-    "three_diamonds",
-    "four_diamonds",
-    "five_diamonds",
-    "six_diamonds",
-    "seven_diamonds",
-    "eight_diamonds",
-    "nine_diamonds",
-    "ten_diamonds",
-    "jack_diamonds",
-    "queen_diamonds",
-    "king_diamonds",
+    ["ace_clubs",1,"black"],
+    ["two_clubs",2,"black"],
+    ["three_clubs",3,"black"],
+    ["four_clubs",4,"black"],
+    ["five_clubs",5,"black"],
+    ["six_clubs",6,"black"],
+    ["seven_clubs",7,"black"],
+    ["eight_clubs",8,"black"],
+    ["nine_clubs",9,"black"],
+    ["ten_clubs",10,"black"],
+    ["jack_clubs",11,"black"],
+    ["queen_clubs",12,"black"],
+    ["king_clubs",13,"black"],
+    ["ace_hearts",1,"red"],
+    ["two_hearts",2,"red"],
+    ["three_hearts",3,"red"],
+    ["four_hearts",4,"red"],
+    ["five_hearts",5,"red"],
+    ["six_hearts",6,"red"],
+    ["seven_hearts",7,"red"],
+    ["eight_hearts",8,"red"],
+    ["nine_hearts",9,"red"],
+    ["ten_hearts",10,"red"],
+    ["jack_hearts",11,"red"],
+    ["queen_hearts",12,"red"],
+    ["king_hearts",13,"red"],
+    ["ace_spades",1,"black"],
+    ["two_spades",2,"black"],
+    ["three_spades",3,"black"],
+    ["four_spades",4,"black"],
+    ["five_spades",5,"black"],
+    ["six_spades",6,"black"],
+    ["seven_spades",7,"black"],
+    ["eight_spades",8,"black"],
+    ["nine_spades",9,"black"],
+    ["ten_spades",10,"black"],
+    ["jack_spades",11,"black"],
+    ["queen_spades",12,"black"],
+    ["king_spades",13,"black"],
+    ["ace_diamonds",1,"red"],
+    ["two_diamonds",2,"red"],
+    ["three_diamonds",3,"red"],
+    ["four_diamonds",4,"red"],
+    ["five_diamonds",5,"red"],
+    ["six_diamonds",6,"red"],
+    ["seven_diamonds",7,"red"],
+    ["eight_diamonds",8,"red"],
+    ["nine_diamonds",9,"red"],
+    ["ten_diamonds",10,"red"],
+    ["jack_diamonds",11,"red"],
+    ["queen_diamonds",12,"red"],
+    ["king_diamonds",13,"red"]
 ]
 
 let cardsInColomn=document.querySelectorAll("#bottom>div");
@@ -71,6 +71,8 @@ cardsInColomn.forEach(element => {
         margin+=20;
         if(element!=element.parentNode.lastElementChild){
             element.lastElementChild.style.display="block";
+        }else{
+            element.setAttribute("draggable","true");
         }
     });
 });
@@ -79,7 +81,20 @@ let cards=document.querySelectorAll(".card");
 
 cards.forEach(element => {
     let i=cardGeneration()
-    element.className+=" "+cardCorrespondance[i-1];
+    element.className+=" "+cardCorrespondance[i-1][0];
+    element.setAttribute("cardValue",cardCorrespondance[i-1][1]);
+    element.setAttribute("cardColor",cardCorrespondance[i-1][2]);
+    let cardClass="";
+    if(cardCorrespondance[i-1][0].includes("clubs")){
+        cardClass="clubs";
+    }else if(cardCorrespondance[i-1][0].includes("hearts")){
+        cardClass="hearts";
+    }else if(cardCorrespondance[i-1][0].includes("spades")){
+        cardClass="spades";
+    }else{
+        cardClass="diamonds";
+    }
+    element.setAttribute("cardClass",cardClass);
 });
 
 let donneCards=document.querySelectorAll("#donne>div");
@@ -95,12 +110,28 @@ donne.addEventListener('click',function(){
     if(donne.lastElementChild){
         let card=donne.lastElementChild;
         card.firstElementChild.style.display="none";
+        card.setAttribute("draggable","true");
+        // card.addEventListener('dragstart', function(e) {
+        //     console.log("drag");
+        // });
         fausse.appendChild(card);
     }else{
         let fausseCards=document.querySelectorAll("#fausse>div");
         for (let index = fausseCards.length-1; index >=0; index--) {
-            fausseCards[index].firstElementChild.display="block";
+            fausseCards[index].firstElementChild.style.display="block";
+            fausseCards[index].setAttribute("draggable","false");
             donne.appendChild(fausseCards[index]);
         }
     }
 });
+
+let slots=document.querySelectorAll("#slots>div");
+
+// slots.forEach(element => {
+//     element.addEventListener('dragover', function(e) {
+//         e.preventDefault(); // Annule l'interdiction de drop
+//     });
+//     element.addEventListener('drop', function(e) {
+//         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+//     });
+// });
