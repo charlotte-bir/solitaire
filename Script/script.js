@@ -70,7 +70,7 @@ cardsInColomn.forEach(element => {
         element.style.marginTop=margin+"px";
         margin+=20;
         if(element!=element.parentNode.lastElementChild){
-            element.lastElementChild.style.zIndex="0";
+            element.lastElementChild.style.display="block";
         }
     });
 });
@@ -82,8 +82,25 @@ cards.forEach(element => {
     element.className+=" "+cardCorrespondance[i-1];
 });
 
-let donne=document.querySelectorAll("#donne>div");
+let donneCards=document.querySelectorAll("#donne>div");
 
-donne.forEach(element => {
-    element.lastElementChild.style.zIndex="0";
+donneCards.forEach(element => {
+    element.lastElementChild.style.display="block";
+});
+
+let donne=document.querySelector("#donne");
+let fausse=document.querySelector("#fausse");
+
+donne.addEventListener('click',function(){
+    if(donne.lastElementChild){
+        let card=donne.lastElementChild;
+        card.firstElementChild.style.display="none";
+        fausse.appendChild(card);
+    }else{
+        let fausseCards=document.querySelectorAll("#fausse>div");
+        for (let index = fausseCards.length-1; index >=0; index--) {
+            fausseCards[index].firstElementChild.display="block";
+            donne.appendChild(fausseCards[index]);
+        }
+    }
 });
