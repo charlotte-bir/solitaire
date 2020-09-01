@@ -89,7 +89,7 @@ cardsInColomn.forEach(element => {
 let cards=document.querySelectorAll(".card");
 
 cards.forEach(element => {
-    let i=cardGeneration()
+    let i=cardGeneration();
     element.className+=" "+cardCorrespondance[i-1][0];
     element.setAttribute("cardValue",cardCorrespondance[i-1][1]);
     element.setAttribute("cardColor",cardCorrespondance[i-1][2]);
