@@ -64,6 +64,25 @@ let cardCorrespondance=[
 
 let cardsInColomn=document.querySelectorAll("#bottom>div");
 
+cardsInColomn.forEach(element => {
+    element.addEventListener('dragover', function(e) {
+        e.preventDefault(); // Annule l'interdiction de drop
+    });
+    element.addEventListener('drop', function(e) {
+        e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        if(movingCard.className.includes("king")){
+            movingCard.style.marginTop="0px";
+            let parent=movingCard.parentNode;
+            element.appendChild(movingCard);
+            if(parent.lastElementChild){
+                makeDraggable(parent.lastElementChild);
+                parent.lastElementChild.lastElementChild.style.display="none" 
+            }
+        }
+    });
+});
+        
+
 let movingCard;
 
 function makeDraggable(element){
@@ -150,3 +169,4 @@ slots.forEach(element => {
         }
     });
 });
+
