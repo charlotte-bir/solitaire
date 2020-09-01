@@ -123,6 +123,30 @@ cards.forEach(element => {
         cardClass="diamonds";
     }
     element.setAttribute("cardClass",cardClass);
+    element.addEventListener('dragover', function(e) {
+        e.preventDefault(); // Annule l'interdiction de drop
+    });
+    // Gestion des conditions de superposition des cartes
+    element.addEventListener('drop',function dropOnCard(e){
+        e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        if(element.lastElementChild.style.display!="block" 
+        && element.parentElement.parentElement.id=="bottom" 
+        && movingCard.attributes.cardColor.value!=element.attributes.cardColor.value 
+        && movingCard.attributes.cardValue.value==element.attributes.cardValue.value-1){
+            let margin=parseInt(element.parentElement.lastElementChild.style.marginTop.slice(0,-2))+20;
+            let parent=movingCard.parentNode;
+            if(movingCard==movingCard.parentElement.lastElementChild){
+                movingCard.style.marginTop=margin+"px";
+                element.parentElement.appendChild(movingCard);
+            }else{
+                //a compléter
+            }
+            if(parent.lastElementChild){
+                makeDraggable(parent.lastElementChild);
+                parent.lastElementChild.lastElementChild.style.display="none";
+            }  
+        }
+    });
 });
 
 let donneCards=document.querySelectorAll("#donne>div");
@@ -152,21 +176,36 @@ donne.addEventListener('click',function(){
 
 let slots=document.querySelectorAll("#slots>div");
 
+
 slots.forEach(element => {
     element.addEventListener('dragover', function(e) {
         e.preventDefault(); // Annule l'interdiction de drop
     });
     element.addEventListener('drop', function(e) {
         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
-        if(element.id==movingCard.attributes.cardClass.value){
-            movingCard.style.marginTop="0px";
-            let parent=movingCard.parentNode;
-            element.appendChild(movingCard);
-            if(parent.lastElementChild){
-                makeDraggable(parent.lastElementChild);
-                parent.lastElementChild.lastElementChild.style.display="none";
-            }
+        
+        if(element.id==movingCard.attributes.cardClass.value ){
+            if(!element.lastElementChild &&  movingCard.attributes.cardValue.value==1){
+                movingCard.style.marginTop="0px";
+                let parent=movingCard.parentNode;
+                element.appendChild(movingCard);
+                if(parent.lastElementChild){
+                    makeDraggable(parent.lastElementChild);
+                    parent.lastElementChild.lastElementChild.style.display="none";
+                }
+            }else if(element.lastElementChild && movingCard.attributes.cardValue.value==parseInt(element.lastElementChild.attributes.cardValue.value)+1){
+                movingCard.style.marginTop="0px";
+                let parent=movingCard.parentNode;
+                element.appendChild(movingCard);
+                if(parent.lastElementChild){
+                    makeDraggable(parent.lastElementChild);
+                    parent.lastElementChild.lastElementChild.style.display="none";
+                }
+            } 
+            
         }
+            
+       
     });
 });
 
