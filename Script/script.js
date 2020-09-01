@@ -64,6 +64,25 @@ let cardCorrespondance=[
 
 let cardsInColomn=document.querySelectorAll("#bottom>div");
 
+cardsInColomn.forEach(element => {
+    element.addEventListener('dragover', function(e) {
+        e.preventDefault(); // Annule l'interdiction de drop
+    });
+    element.addEventListener('drop', function(e) {
+        e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        if(movingCard.className.includes("king")){
+            movingCard.style.marginTop="0px";
+            let parent=movingCard.parentNode;
+            element.appendChild(movingCard);
+            if(parent.lastElementChild){
+                makeDraggable(parent.lastElementChild);
+                parent.lastElementChild.lastElementChild.style.display="none" 
+            }
+        }
+    });
+});
+        
+
 let movingCard;
 
 function makeDraggable(element){
@@ -157,20 +176,36 @@ donne.addEventListener('click',function(){
 
 let slots=document.querySelectorAll("#slots>div");
 
+
 slots.forEach(element => {
     element.addEventListener('dragover', function(e) {
         e.preventDefault(); // Annule l'interdiction de drop
     });
     element.addEventListener('drop', function(e) {
         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
-        if(element.id==movingCard.attributes.cardClass.value){
-            movingCard.style.marginTop="0px";
-            let parent=movingCard.parentNode;
-            element.appendChild(movingCard);
-            if(parent.lastElementChild){
-                makeDraggable(parent.lastElementChild);
-                parent.lastElementChild.lastElementChild.style.display="none";
-            }
+        
+        if(element.id==movingCard.attributes.cardClass.value ){
+            if(!element.lastElementChild &&  movingCard.attributes.cardValue.value==1){
+                movingCard.style.marginTop="0px";
+                let parent=movingCard.parentNode;
+                element.appendChild(movingCard);
+                if(parent.lastElementChild){
+                    makeDraggable(parent.lastElementChild);
+                    parent.lastElementChild.lastElementChild.style.display="none";
+                }
+            }else if(element.lastElementChild && movingCard.attributes.cardValue.value==parseInt(element.lastElementChild.attributes.cardValue.value)+1){
+                movingCard.style.marginTop="0px";
+                let parent=movingCard.parentNode;
+                element.appendChild(movingCard);
+                if(parent.lastElementChild){
+                    makeDraggable(parent.lastElementChild);
+                    parent.lastElementChild.lastElementChild.style.display="none";
+                }
+            } 
+            
         }
+            
+       
     });
 });
+
