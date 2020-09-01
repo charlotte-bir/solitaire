@@ -64,6 +64,25 @@ let cardCorrespondance=[
 
 let cardsInColomn=document.querySelectorAll("#bottom>div");
 
+cardsInColomn.forEach(element => {
+    element.addEventListener('dragover', function(e) {
+        e.preventDefault(); // Annule l'interdiction de drop
+    });
+    element.addEventListener('drop', function(e) {
+        e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        if(movingCard.className.includes("king")){
+            movingCard.style.marginTop="0px";
+            let parent=movingCard.parentNode;
+            element.appendChild(movingCard);
+            if(parent.lastElementChild){
+                makeDraggable(parent.lastElementChild);
+                parent.lastElementChild.lastElementChild.style.display="none" 
+            }
+        }
+    });
+});
+        
+
 let movingCard;
 
 function makeDraggable(element){
@@ -89,7 +108,7 @@ cardsInColomn.forEach(element => {
 let cards=document.querySelectorAll(".card");
 
 cards.forEach(element => {
-    let i=cardGeneration()
+    let i=cardGeneration();
     element.className+=" "+cardCorrespondance[i-1][0];
     element.setAttribute("cardValue",cardCorrespondance[i-1][1]);
     element.setAttribute("cardColor",cardCorrespondance[i-1][2]);
@@ -104,6 +123,30 @@ cards.forEach(element => {
         cardClass="diamonds";
     }
     element.setAttribute("cardClass",cardClass);
+    element.addEventListener('dragover', function(e) {
+        e.preventDefault(); // Annule l'interdiction de drop
+    });
+    // Gestion des conditions de superposition des cartes
+    element.addEventListener('drop',function dropOnCard(e){
+        e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        if(element.lastElementChild.style.display!="block" 
+        && element.parentElement.parentElement.id=="bottom" 
+        && movingCard.attributes.cardColor.value!=element.attributes.cardColor.value 
+        && movingCard.attributes.cardValue.value==element.attributes.cardValue.value-1){
+            let margin=parseInt(element.parentElement.lastElementChild.style.marginTop.slice(0,-2))+20;
+            let parent=movingCard.parentNode;
+            if(movingCard==movingCard.parentElement.lastElementChild){
+                movingCard.style.marginTop=margin+"px";
+                element.parentElement.appendChild(movingCard);
+            }else{
+                //a compléter
+            }
+            if(parent.lastElementChild){
+                makeDraggable(parent.lastElementChild);
+                parent.lastElementChild.lastElementChild.style.display="none";
+            }  
+        }
+    });
 });
 
 let donneCards=document.querySelectorAll("#donne>div");
