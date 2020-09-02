@@ -70,9 +70,13 @@ let cardCorrespondance=[
     ["king_diamonds",13,"red"]
 ]
 
-let cardsInColomn=document.querySelectorAll("#bottom>div");
+let frontSideCardsCount=31;
 
-cardsInColomn.forEach(element => {
+let winMessage=document.querySelector("#winMessage");
+
+let colomns=document.querySelectorAll("#bottom>div");
+
+colomns.forEach(element => {
     element.addEventListener('dragover', function(e) {
         e.preventDefault(); // Annule l'interdiction de drop
     });
@@ -94,11 +98,17 @@ cardsInColomn.forEach(element => {
                     element.appendChild(sibling);
                 });
             }
-            if(parent.lastElementChild){
+            if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){           
                 makeDraggable(parent.lastElementChild);
                 parent.lastElementChild.lastElementChild.style.display="none";
+                console.log("colomns");
+                frontSideCardsCount+=1;
+                if(frontSideCardsCount==52){
+                    winMessage.style.display="block";
+                }
             }  
-        }       
+        }  
+        console.log(frontSideCardsCount);     
     });
 });
         
@@ -109,10 +119,27 @@ function makeDraggable(element){
     element.setAttribute("draggable","true");
     element.addEventListener('dragstart', function(e) {
         movingCard=element;
+        setTimeout(function(){
+            movingCard.style.display="none";
+            let nextSiblings=getNextSiblings(movingCard);
+            nextSiblings.forEach(sibling => {
+                sibling.style.display="none";
+            });
+        })
+    });
+    element.addEventListener('dragend', function(e) {
+        movingCard=element;
+        setTimeout(function(){
+            movingCard.style.display="block";
+            let nextSiblings=getNextSiblings(movingCard);
+            nextSiblings.forEach(sibling => {
+                sibling.style.display="block";
+            });
+        })
     });
 }
 
-cardsInColomn.forEach(element => {
+colomns.forEach(element => {
     let margin=0;
     element.querySelectorAll(".card").forEach(element => {
         element.style.marginTop=margin+"px";
@@ -168,11 +195,18 @@ cards.forEach(element => {
                     element.parentElement.appendChild(sibling);
                 });
             }
-            if(parent.lastElementChild){
+            console.log(parent);
+            if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
                 makeDraggable(parent.lastElementChild);
                 parent.lastElementChild.lastElementChild.style.display="none";
+                console.log("cards");
+                frontSideCardsCount+=1;
+                if(frontSideCardsCount==52){
+                    winMessage.style.display="block";
+                }
             }  
         }
+        console.log(frontSideCardsCount);
     });
 });
 
@@ -203,7 +237,7 @@ donne.addEventListener('click',function(){
 
 let slots=document.querySelectorAll("#slots>div");
 
-let slotValues={clubs:0,hearts:0,spades:0,diamonds:0};
+// let slotValues={clubs:0,hearts:0,spades:0,diamonds:0};
 
 slots.forEach(element => {
     element.addEventListener('dragover', function(e) {
@@ -212,27 +246,41 @@ slots.forEach(element => {
     element.addEventListener('drop', function(e) {
         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
         if(element.id==movingCard.attributes.cardClass.value ){
-            if(!element.lastElementChild &&  movingCard.attributes.cardValue.value==1){
+            if((!element.lastElementChild &&  movingCard.attributes.cardValue.value==1) || (element.lastElementChild && movingCard.attributes.cardValue.value==parseInt(element.lastElementChild.attributes.cardValue.value)+1)){
                 movingCard.style.marginTop="0px";
                 let parent=movingCard.parentNode;
                 element.appendChild(movingCard);
-                if(parent.lastElementChild){
+                console.log(parent);
+                if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
                     makeDraggable(parent.lastElementChild);
+                    console.log(parent.lastElementChild.lastElementChild.style.display);
                     parent.lastElementChild.lastElementChild.style.display="none";
+                    console.log("slots1");
+                    frontSideCardsCount+=1;
+                    if(frontSideCardsCount==52){
+                        winMessage.style.display="block";
+                    }
                 }
-            }else if(element.lastElementChild && movingCard.attributes.cardValue.value==parseInt(element.lastElementChild.attributes.cardValue.value)+1){
-                movingCard.style.marginTop="0px";
-                let parent=movingCard.parentNode;
-                element.appendChild(movingCard);
-                if(parent.lastElementChild){
-                    makeDraggable(parent.lastElementChild);
-                    parent.lastElementChild.lastElementChild.style.display="none";
-                }
-            } 
-            slotValues[movingCard.attributes.cardClass.value]=movingCard.attributes.cardValue.value;
-            if(slotValues["clubs"]==13 && slotValues["hearts"]==13 && slotValues["spades"]==13 && slotValues["diamonds"]==13){
-                console.log("fin de partie!");
             }
+            // else if(element.lastElementChild && movingCard.attributes.cardValue.value==parseInt(element.lastElementChild.attributes.cardValue.value)+1){
+            //     movingCard.style.marginTop="0px";
+            //     let parent=movingCard.parentNode;
+            //     element.appendChild(movingCard);
+            //     if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
+            //         makeDraggable(parent.lastElementChild);
+            //         parent.lastElementChild.lastElementChild.style.display="none";
+            //         console.log("slots2");
+            //         frontSideCardsCount+=1;
+            //         if(frontSideCardsCount==52){
+            //             winMessage.style.display="block";
+            //         }
+            //     }
+            // } 
+            // slotValues[movingCard.attributes.cardClass.value]=element.childElementCount;
+            // if(slotValues["clubs"]==13 && slotValues["hearts"]==13 && slotValues["spades"]==13 && slotValues["diamonds"]==13){
+            //     console.log("fin de partie!");
+            // }
         }
+        console.log(frontSideCardsCount);
     });
 });
