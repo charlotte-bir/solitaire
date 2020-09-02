@@ -203,6 +203,7 @@ donne.addEventListener('click',function(){
 
 let slots=document.querySelectorAll("#slots>div");
 
+let slotValues={clubs:0,hearts:0,spades:0,diamonds:0};
 
 slots.forEach(element => {
     element.addEventListener('dragover', function(e) {
@@ -228,7 +229,10 @@ slots.forEach(element => {
                     parent.lastElementChild.lastElementChild.style.display="none";
                 }
             } 
-            
+            slotValues[movingCard.attributes.cardClass.value]=movingCard.attributes.cardValue.value;
+            if(slotValues["clubs"]==13 && slotValues["hearts"]==13 && slotValues["spades"]==13 && slotValues["diamonds"]==13){
+                console.log("fin de partie!");
+            }
         }
     });
 });
