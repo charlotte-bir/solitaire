@@ -7,6 +7,14 @@ function cardGeneration(){
     return number;
 }
 
+function getNextSiblings(element){
+    var arraySib = [];
+    while ( element = element.nextElementSibling ){
+        arraySib.push(element);
+    }
+    return arraySib;
+}
+
 let cardCorrespondance=[
     ["ace_clubs",1,"black"],
     ["two_clubs",2,"black"],
@@ -70,15 +78,27 @@ cardsInColomn.forEach(element => {
     });
     element.addEventListener('drop', function(e) {
         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
-        if(movingCard.className.includes("king")){
-            movingCard.style.marginTop="0px";
+        if(movingCard.className.includes("king") && !element.lastElementChild){
+            let margin=0;
             let parent=movingCard.parentNode;
-            element.appendChild(movingCard);
+            if(movingCard==movingCard.parentElement.lastElementChild){
+                movingCard.style.marginTop=margin+"px";
+                element.appendChild(movingCard);
+            }else{
+                let nextSiblings=getNextSiblings(movingCard);
+                movingCard.style.marginTop=margin+"px";
+                element.appendChild(movingCard);
+                nextSiblings.forEach(sibling => {
+                    margin+=20;
+                    sibling.style.marginTop=margin+"px";
+                    element.appendChild(sibling);
+                });
+            }
             if(parent.lastElementChild){
                 makeDraggable(parent.lastElementChild);
-                parent.lastElementChild.lastElementChild.style.display="none" 
-            }
-        }
+                parent.lastElementChild.lastElementChild.style.display="none";
+            }  
+        }       
     });
 });
         
@@ -139,7 +159,14 @@ cards.forEach(element => {
                 movingCard.style.marginTop=margin+"px";
                 element.parentElement.appendChild(movingCard);
             }else{
-                //a compléter
+                let nextSiblings=getNextSiblings(movingCard);
+                movingCard.style.marginTop=margin+"px";
+                element.parentElement.appendChild(movingCard);
+                nextSiblings.forEach(sibling => {
+                    margin+=20;
+                    sibling.style.marginTop=margin+"px";
+                    element.parentElement.appendChild(sibling);
+                });
             }
             if(parent.lastElementChild){
                 makeDraggable(parent.lastElementChild);
@@ -183,7 +210,6 @@ slots.forEach(element => {
     });
     element.addEventListener('drop', function(e) {
         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
-        
         if(element.id==movingCard.attributes.cardClass.value ){
             if(!element.lastElementChild &&  movingCard.attributes.cardValue.value==1){
                 movingCard.style.marginTop="0px";
@@ -204,8 +230,5 @@ slots.forEach(element => {
             } 
             
         }
-            
-       
     });
 });
-
