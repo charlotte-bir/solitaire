@@ -99,16 +99,17 @@ colomns.forEach(element => {
                 });
             }
             if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){           
+                console.log(parent.lastElementChild.lastElementChild.style.display);
                 makeDraggable(parent.lastElementChild);
                 parent.lastElementChild.lastElementChild.style.display="none";
-                console.log("colomns");
                 frontSideCardsCount+=1;
                 if(frontSideCardsCount==52){
                     winMessage.style.display="block";
                 }
             }  
+            console.log("colomns");
+            console.log(frontSideCardsCount);
         }  
-        console.log(frontSideCardsCount);     
     });
 });
         
@@ -147,6 +148,7 @@ colomns.forEach(element => {
         if(element!=element.parentNode.lastElementChild){
             element.lastElementChild.style.display="block";
         }else{
+            element.lastElementChild.style.display="none";
             makeDraggable(element);
         }
     });
@@ -195,17 +197,17 @@ cards.forEach(element => {
                     element.parentElement.appendChild(sibling);
                 });
             }
-            console.log(parent);
             if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
+                console.log(parent.lastElementChild.lastElementChild.style.display);
                 makeDraggable(parent.lastElementChild);
                 parent.lastElementChild.lastElementChild.style.display="none";
-                console.log("cards");
                 frontSideCardsCount+=1;
                 if(frontSideCardsCount==52){
                     winMessage.style.display="block";
                 }
             }  
         }
+        console.log("cards");
         console.log(frontSideCardsCount);
     });
 });
@@ -250,12 +252,10 @@ slots.forEach(element => {
                 movingCard.style.marginTop="0px";
                 let parent=movingCard.parentNode;
                 element.appendChild(movingCard);
-                console.log(parent);
                 if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
-                    makeDraggable(parent.lastElementChild);
                     console.log(parent.lastElementChild.lastElementChild.style.display);
+                    makeDraggable(parent.lastElementChild);
                     parent.lastElementChild.lastElementChild.style.display="none";
-                    console.log("slots1");
                     frontSideCardsCount+=1;
                     if(frontSideCardsCount==52){
                         winMessage.style.display="block";
@@ -281,6 +281,7 @@ slots.forEach(element => {
             //     console.log("fin de partie!");
             // }
         }
+        console.log("slots");
         console.log(frontSideCardsCount);
     });
 });
