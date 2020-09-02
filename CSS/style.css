@@ -12,6 +12,7 @@ body{
     flex-direction: column;
     justify-content: top;
     align-items: center;
+    min-width: 700px;
 }
 
 h1{
