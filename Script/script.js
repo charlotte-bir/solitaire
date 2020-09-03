@@ -1,4 +1,4 @@
-let numbers=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52]
+let numbers=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51]
 
 function cardGeneration(){
     let index=Math.floor(Math.random() * (numbers.length) ); 
@@ -158,15 +158,15 @@ let cards=document.querySelectorAll(".card");
 
 cards.forEach(element => {
     let i=cardGeneration();
-    element.className+=" "+cardCorrespondance[i-1][0];
-    element.setAttribute("cardValue",cardCorrespondance[i-1][1]);
-    element.setAttribute("cardColor",cardCorrespondance[i-1][2]);
+    element.className+=" "+cardCorrespondance[i][0];
+    element.setAttribute("cardValue",cardCorrespondance[i][1]);
+    element.setAttribute("cardColor",cardCorrespondance[i][2]);
     let cardClass="";
-    if(cardCorrespondance[i-1][0].includes("clubs")){
+    if(cardCorrespondance[i][0].includes("clubs")){
         cardClass="clubs";
-    }else if(cardCorrespondance[i-1][0].includes("hearts")){
+    }else if(cardCorrespondance[i][0].includes("hearts")){
         cardClass="hearts";
-    }else if(cardCorrespondance[i-1][0].includes("spades")){
+    }else if(cardCorrespondance[i][0].includes("spades")){
         cardClass="spades";
     }else{
         cardClass="diamonds";
