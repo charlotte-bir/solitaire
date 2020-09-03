@@ -99,7 +99,6 @@ colomns.forEach(element => {
                 });
             }
             if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){           
-                console.log(parent.lastElementChild.lastElementChild.style.display);
                 makeDraggable(parent.lastElementChild);
                 parent.lastElementChild.lastElementChild.style.display="none";
                 frontSideCardsCount+=1;
@@ -107,8 +106,6 @@ colomns.forEach(element => {
                     winMessage.style.display="block";
                 }
             }  
-            console.log("colomns");
-            console.log(frontSideCardsCount);
         }  
     });
 });
@@ -198,7 +195,6 @@ cards.forEach(element => {
                 });
             }
             if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
-                console.log(parent.lastElementChild.lastElementChild.style.display);
                 makeDraggable(parent.lastElementChild);
                 parent.lastElementChild.lastElementChild.style.display="none";
                 frontSideCardsCount+=1;
@@ -207,8 +203,6 @@ cards.forEach(element => {
                 }
             }  
         }
-        console.log("cards");
-        console.log(frontSideCardsCount);
     });
 });
 
@@ -253,7 +247,6 @@ slots.forEach(element => {
                 let parent=movingCard.parentNode;
                 element.appendChild(movingCard);
                 if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
-                    console.log(parent.lastElementChild.lastElementChild.style.display);
                     makeDraggable(parent.lastElementChild);
                     parent.lastElementChild.lastElementChild.style.display="none";
                     frontSideCardsCount+=1;
@@ -262,26 +255,6 @@ slots.forEach(element => {
                     }
                 }
             }
-            // else if(element.lastElementChild && movingCard.attributes.cardValue.value==parseInt(element.lastElementChild.attributes.cardValue.value)+1){
-            //     movingCard.style.marginTop="0px";
-            //     let parent=movingCard.parentNode;
-            //     element.appendChild(movingCard);
-            //     if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
-            //         makeDraggable(parent.lastElementChild);
-            //         parent.lastElementChild.lastElementChild.style.display="none";
-            //         console.log("slots2");
-            //         frontSideCardsCount+=1;
-            //         if(frontSideCardsCount==52){
-            //             winMessage.style.display="block";
-            //         }
-            //     }
-            // } 
-            // slotValues[movingCard.attributes.cardClass.value]=element.childElementCount;
-            // if(slotValues["clubs"]==13 && slotValues["hearts"]==13 && slotValues["spades"]==13 && slotValues["diamonds"]==13){
-            //     console.log("fin de partie!");
-            // }
         }
-        console.log("slots");
-        console.log(frontSideCardsCount);
     });
 });
