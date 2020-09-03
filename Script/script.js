@@ -1,10 +1,18 @@
-let numbers=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52]
+let numbers=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51]
 
 function cardGeneration(){
     let index=Math.floor(Math.random() * (numbers.length) ); 
     let number=numbers[index];
     numbers.splice(index,1);
     return number;
+}
+
+function getNextSiblings(element){
+    var arraySib = [];
+    while ( element = element.nextElementSibling ){
+        arraySib.push(element);
+    }
+    return arraySib;
 }
 
 let cardCorrespondance=[
@@ -62,7 +70,46 @@ let cardCorrespondance=[
     ["king_diamonds",13,"red"]
 ]
 
-let cardsInColomn=document.querySelectorAll("#bottom>div");
+let frontSideCardsCount=31;
+
+let winMessage=document.querySelector("#winMessage");
+
+let colomns=document.querySelectorAll("#bottom>div");
+
+colomns.forEach(element => {
+    element.addEventListener('dragover', function(e) {
+        e.preventDefault(); // Annule l'interdiction de drop
+    });
+    element.addEventListener('drop', function(e) {
+        e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        if(movingCard.className.includes("king") && !element.lastElementChild){
+            let margin=0;
+            let parent=movingCard.parentNode;
+            if(movingCard==movingCard.parentElement.lastElementChild){
+                movingCard.style.marginTop=margin+"px";
+                element.appendChild(movingCard);
+            }else{
+                let nextSiblings=getNextSiblings(movingCard);
+                movingCard.style.marginTop=margin+"px";
+                element.appendChild(movingCard);
+                nextSiblings.forEach(sibling => {
+                    margin+=20;
+                    sibling.style.marginTop=margin+"px";
+                    element.appendChild(sibling);
+                });
+            }
+            if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){           
+                makeDraggable(parent.lastElementChild);
+                parent.lastElementChild.lastElementChild.style.display="none";
+                frontSideCardsCount+=1;
+                if(frontSideCardsCount==52){
+                    winMessage.style.display="block";
+                }
+            }  
+        }  
+    });
+});
+        
 
 let movingCard;
 
@@ -70,10 +117,27 @@ function makeDraggable(element){
     element.setAttribute("draggable","true");
     element.addEventListener('dragstart', function(e) {
         movingCard=element;
+        setTimeout(function(){
+            movingCard.style.display="none";
+            let nextSiblings=getNextSiblings(movingCard);
+            nextSiblings.forEach(sibling => {
+                sibling.style.display="none";
+            });
+        })
+    });
+    element.addEventListener('dragend', function(e) {
+        movingCard=element;
+        setTimeout(function(){
+            movingCard.style.display="block";
+            let nextSiblings=getNextSiblings(movingCard);
+            nextSiblings.forEach(sibling => {
+                sibling.style.display="block";
+            });
+        })
     });
 }
 
-cardsInColomn.forEach(element => {
+colomns.forEach(element => {
     let margin=0;
     element.querySelectorAll(".card").forEach(element => {
         element.style.marginTop=margin+"px";
@@ -81,6 +145,7 @@ cardsInColomn.forEach(element => {
         if(element!=element.parentNode.lastElementChild){
             element.lastElementChild.style.display="block";
         }else{
+            element.lastElementChild.style.display="none";
             makeDraggable(element);
         }
     });
@@ -90,20 +155,55 @@ let cards=document.querySelectorAll(".card");
 
 cards.forEach(element => {
     let i=cardGeneration();
-    element.className+=" "+cardCorrespondance[i-1][0];
-    element.setAttribute("cardValue",cardCorrespondance[i-1][1]);
-    element.setAttribute("cardColor",cardCorrespondance[i-1][2]);
+    element.className+=" "+cardCorrespondance[i][0];
+    element.setAttribute("cardValue",cardCorrespondance[i][1]);
+    element.setAttribute("cardColor",cardCorrespondance[i][2]);
     let cardClass="";
-    if(cardCorrespondance[i-1][0].includes("clubs")){
+    if(cardCorrespondance[i][0].includes("clubs")){
         cardClass="clubs";
-    }else if(cardCorrespondance[i-1][0].includes("hearts")){
+    }else if(cardCorrespondance[i][0].includes("hearts")){
         cardClass="hearts";
-    }else if(cardCorrespondance[i-1][0].includes("spades")){
+    }else if(cardCorrespondance[i][0].includes("spades")){
         cardClass="spades";
     }else{
         cardClass="diamonds";
     }
     element.setAttribute("cardClass",cardClass);
+    element.addEventListener('dragover', function(e) {
+        e.preventDefault(); // Annule l'interdiction de drop
+    });
+    // Gestion des conditions de superposition des cartes
+    element.addEventListener('drop',function dropOnCard(e){
+        e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        if(element.lastElementChild.style.display!="block" 
+        && element.parentElement.parentElement.id=="bottom" 
+        && movingCard.attributes.cardColor.value!=element.attributes.cardColor.value 
+        && movingCard.attributes.cardValue.value==element.attributes.cardValue.value-1){
+            let margin=parseInt(element.parentElement.lastElementChild.style.marginTop.slice(0,-2))+20;
+            let parent=movingCard.parentNode;
+            if(movingCard==movingCard.parentElement.lastElementChild){
+                movingCard.style.marginTop=margin+"px";
+                element.parentElement.appendChild(movingCard);
+            }else{
+                let nextSiblings=getNextSiblings(movingCard);
+                movingCard.style.marginTop=margin+"px";
+                element.parentElement.appendChild(movingCard);
+                nextSiblings.forEach(sibling => {
+                    margin+=20;
+                    sibling.style.marginTop=margin+"px";
+                    element.parentElement.appendChild(sibling);
+                });
+            }
+            if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
+                makeDraggable(parent.lastElementChild);
+                parent.lastElementChild.lastElementChild.style.display="none";
+                frontSideCardsCount+=1;
+                if(frontSideCardsCount==52){
+                    winMessage.style.display="block";
+                }
+            }  
+        }
+    });
 });
 
 let donneCards=document.querySelectorAll("#donne>div");
@@ -133,19 +233,27 @@ donne.addEventListener('click',function(){
 
 let slots=document.querySelectorAll("#slots>div");
 
+// let slotValues={clubs:0,hearts:0,spades:0,diamonds:0};
+
 slots.forEach(element => {
     element.addEventListener('dragover', function(e) {
         e.preventDefault(); // Annule l'interdiction de drop
     });
     element.addEventListener('drop', function(e) {
         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
-        if(element.id==movingCard.attributes.cardClass.value){
-            movingCard.style.marginTop="0px";
-            let parent=movingCard.parentNode;
-            element.appendChild(movingCard);
-            if(parent.lastElementChild){
-                makeDraggable(parent.lastElementChild);
-                parent.lastElementChild.lastElementChild.style.display="none";
+        if(element.id==movingCard.attributes.cardClass.value ){
+            if((!element.lastElementChild &&  movingCard.attributes.cardValue.value==1) || (element.lastElementChild && movingCard.attributes.cardValue.value==parseInt(element.lastElementChild.attributes.cardValue.value)+1)){
+                movingCard.style.marginTop="0px";
+                let parent=movingCard.parentNode;
+                element.appendChild(movingCard);
+                if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){ 
+                    makeDraggable(parent.lastElementChild);
+                    parent.lastElementChild.lastElementChild.style.display="none";
+                    frontSideCardsCount+=1;
+                    if(frontSideCardsCount==52){
+                        winMessage.style.display="block";
+                    }
+                }
             }
         }
     });
