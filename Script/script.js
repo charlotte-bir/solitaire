@@ -20,7 +20,7 @@ function getNextSiblings(element){
 }
 
 //tableau servant à appliquer les classes et les attributs à chaque carte
-let cardCorrespondance=[
+const cardCorrespondance=[
     ["ace_clubs",1,"black"],
     ["two_clubs",2,"black"],
     ["three_clubs",3,"black"],
@@ -217,7 +217,9 @@ cards.forEach(element => {
         }
     });
     //placement au double clic de la carte dans le slot correspondant
-    element.addEventListener('dblclick',function(){
+    element.addEventListener('dblclick',function(e){
+        e.preventDefault();
+        e.stopPropagation();
         if(element.lastElementChild.style.display!="block" && element==element.parentElement.lastElementChild){
             let cardClass=element.attributes.cardClass.value;
             let slot=document.querySelector("#"+cardClass);
