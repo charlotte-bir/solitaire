@@ -111,6 +111,12 @@ h1{
     font-size: 1.3em;
 }
 
+#chrono{
+    position: absolute;
+    margin-top: 6em;
+    color: white;
+}
+
 #clubs{
     background: url(../Images/trefle.png);
 }
