@@ -208,11 +208,26 @@ cards.forEach(element => {
         if(element.lastElementChild.style.display!="block" 
         && element.parentElement.parentElement.id=="bottom" 
         && movingCard.attributes.cardColor.value!=element.attributes.cardColor.value 
-        && movingCard.attributes.cardValue.value==element.attributes.cardValue.value-1){
+        && movingCard.attributes.cardValue.value==element.attributes.cardValue.value-1
+        && movingCard.parentElement!=element.parentElement){
             let margin=parseInt(element.parentElement.lastElementChild.style.marginTop.slice(0,-2))+20;
             let parent=movingCard.parentNode;
             placeMovingCard("cards",margin,element);
             flipAndCount(parent);
+        }
+    });
+    //placement au double clic de la carte dans le slot correspondant
+    element.addEventListener('dblclick',function(){
+        if(element.lastElementChild.style.display!="block" && element==element.parentElement.lastElementChild){
+            let cardClass=element.attributes.cardClass.value;
+            let slot=document.querySelector("#"+cardClass);
+            if((!slot.lastElementChild && element.attributes.cardValue.value==1) 
+            || (slot.lastElementChild && slot.lastElementChild.attributes.cardValue.value==element.attributes.cardValue.value-1)){
+                element.style.marginTop="0px";
+                let parent=element.parentNode;
+                slot.appendChild(element);
+                flipAndCount(parent);
+            }
         }
     });
 });
