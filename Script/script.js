@@ -235,20 +235,25 @@ cards.forEach(element => {
                 slot.appendChild(element);
                 flipAndCount(parent);
             }
-            else if(element.className.includes("king")){
-                for (let i = 0; i < colomns.length; i++) {
-                    if(!colomns[i].lastElementChild){
-                        element.style.marginTop="0px";
-                        let parent=element.parentNode;
-                        colomns[i].appendChild(element);
-                        flipAndCount(parent);
-                        break;
-                    }
-                    
-                };
-            }
-        }
-        
+        }if(element.lastElementChild.style.display!="block" && element.className.includes("king") && element.parentElement.parentElement.id!="slots"){
+            startChrono();
+            for (let i = 0; i < colomns.length; i++) {
+                if(!colomns[i].lastElementChild){
+                    let margin=0;
+                    element.style.marginTop=margin+"px";
+                    let parent=element.parentNode;
+                    let nextSiblings=getNextSiblings(element);
+                    colomns[i].appendChild(element);
+                    nextSiblings.forEach(sibling => {
+                        margin+=20;
+                        sibling.style.marginTop=margin+"px";
+                        colomns[i].appendChild(sibling);
+                    });
+                    flipAndCount(parent);
+                    break;
+                }    
+            };
+        }       
     });
 });
 
