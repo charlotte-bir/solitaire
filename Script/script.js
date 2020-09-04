@@ -75,6 +75,8 @@ const cardCorrespondance=[
     ["king_diamonds",13,"red"]
 ]
 
+let firework=document.querySelector(".pyro");
+
 //nombre de cartes retournées en début de partie (24 dans la pioches + 7 dans les colonnes = 31)
 let frontSideCardsCount=31;
 
@@ -92,6 +94,7 @@ function flipAndCount(parent){
         frontSideCardsCount++;
         if(frontSideCardsCount==52){
             winMessage.style.display="block";
+            firework.style.display="block";
             clearInterval(interval);
         }
     }  
@@ -222,6 +225,7 @@ cards.forEach(element => {
     //placement au double clic de la carte dans le slot correspondant
     element.addEventListener('dblclick',function(){
         if(element.lastElementChild.style.display!="block" && element==element.parentElement.lastElementChild){
+            startChrono();
             let cardClass=element.attributes.cardClass.value;
             let slot=document.querySelector("#"+cardClass);
             if((!slot.lastElementChild && element.attributes.cardValue.value==1) 
@@ -296,23 +300,23 @@ let interval;
 function startChrono(){
     if(time==0){
         interval=setInterval(function(){
-        time++;
-        let sec;
-        let min;
-        let hours;
-        hours=Math.floor(time/3600);
-        if(hours<10){
-        hours="0"+hours;
-        }
-        min=Math.floor(time%3600/60);
-        if(min<10){
-        min="0"+min;
-        }
-        sec=Math.floor(time%3600%60);
-        if(sec<10){
-        sec="0"+sec;
-        }
-        chrono.innerText="temps écoulé : "+hours +" : "+min+" : "+sec;
+            time++;
+            let sec;
+            let min;
+            let hours;
+            hours=Math.floor(time/3600);
+            if(hours<10){
+            hours="0"+hours;
+            }
+            min=Math.floor(time%3600/60);
+            if(min<10){
+            min="0"+min;
+            }
+            sec=Math.floor(time%3600%60);
+            if(sec<10){
+            sec="0"+sec;
+            }
+            chrono.innerText="temps écoulé : "+hours +" : "+min+" : "+sec;
         }, 1000);  
     }
 }
