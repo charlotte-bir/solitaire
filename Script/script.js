@@ -20,7 +20,7 @@ function getNextSiblings(element){
 }
 
 //tableau servant à appliquer les classes et les attributs à chaque carte
-let cardCorrespondance=[
+const cardCorrespondance=[
     ["ace_clubs",1,"black"],
     ["two_clubs",2,"black"],
     ["three_clubs",3,"black"],
@@ -92,6 +92,7 @@ function flipAndCount(parent){
         frontSideCardsCount++;
         if(frontSideCardsCount==52){
             winMessage.style.display="block";
+            clearInterval(interval);
         }
     }  
 }
@@ -127,6 +128,7 @@ colomns.forEach(element => {
     element.addEventListener('drop', function(e) {
         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
         if(movingCard.className.includes("king") && !element.lastElementChild){
+            startChrono();
             let margin=0;
             let parent=movingCard.parentNode;
             placeMovingCard("colomns",margin,element);
@@ -205,14 +207,30 @@ cards.forEach(element => {
     // Gestion des conditions de superposition des cartes
     element.addEventListener('drop',function dropOnCard(e){
         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        startChrono();
         if(element.lastElementChild.style.display!="block" 
         && element.parentElement.parentElement.id=="bottom" 
         && movingCard.attributes.cardColor.value!=element.attributes.cardColor.value 
-        && movingCard.attributes.cardValue.value==element.attributes.cardValue.value-1){
+        && movingCard.attributes.cardValue.value==element.attributes.cardValue.value-1
+        && movingCard.parentElement!=element.parentElement){
             let margin=parseInt(element.parentElement.lastElementChild.style.marginTop.slice(0,-2))+20;
             let parent=movingCard.parentNode;
             placeMovingCard("cards",margin,element);
             flipAndCount(parent);
+        }
+    });
+    //placement au double clic de la carte dans le slot correspondant
+    element.addEventListener('dblclick',function(){
+        if(element.lastElementChild.style.display!="block" && element==element.parentElement.lastElementChild){
+            let cardClass=element.attributes.cardClass.value;
+            let slot=document.querySelector("#"+cardClass);
+            if((!slot.lastElementChild && element.attributes.cardValue.value==1) 
+            || (slot.lastElementChild && slot.lastElementChild.attributes.cardValue.value==element.attributes.cardValue.value-1)){
+                element.style.marginTop="0px";
+                let parent=element.parentNode;
+                slot.appendChild(element);
+                flipAndCount(parent);
+            }
         }
     });
 });
@@ -231,6 +249,7 @@ let fausse=document.querySelector("#fausse");
 
 //gestion du passages des cartes entre la donne et la fausse et retournage des cartes
 donne.addEventListener('click',function(){
+    startChrono();
     if(donne.lastElementChild){
         let card=donne.lastElementChild;
         card.firstElementChild.style.display="none";
@@ -256,6 +275,7 @@ slots.forEach(element => {
     });
     element.addEventListener('drop', function(e) {
         e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        startChrono();
         if(element.id==movingCard.attributes.cardClass.value ){
             if((!element.lastElementChild &&  movingCard.attributes.cardValue.value==1) || (element.lastElementChild && movingCard.attributes.cardValue.value==parseInt(element.lastElementChild.attributes.cardValue.value)+1)){
                 movingCard.style.marginTop="0px";
@@ -266,3 +286,33 @@ slots.forEach(element => {
         }
     });
 });
+
+let chrono=document.querySelector("#chrono");
+
+let time=0;
+
+let interval;
+
+function startChrono(){
+    if(time==0){
+        interval=setInterval(function(){
+        time++;
+        let sec;
+        let min;
+        let hours;
+        hours=Math.floor(time/3600);
+        if(hours<10){
+        hours="0"+hours;
+        }
+        min=Math.floor(time%3600/60);
+        if(min<10){
+        min="0"+min;
+        }
+        sec=Math.floor(time%3600%60);
+        if(sec<10){
+        sec="0"+sec;
+        }
+        chrono.innerText="temps écoulé : "+hours +" : "+min+" : "+sec;
+        }, 1000);  
+    }
+}
