@@ -235,7 +235,20 @@ cards.forEach(element => {
                 slot.appendChild(element);
                 flipAndCount(parent);
             }
+            else if(element.className.includes("king")){
+                for (let i = 0; i < colomns.length; i++) {
+                    if(!colomns[i].lastElementChild){
+                        element.style.marginTop="0px";
+                        let parent=element.parentNode;
+                        colomns[i].appendChild(element);
+                        flipAndCount(parent);
+                        break;
+                    }
+                    
+                };
+            }
         }
+        
     });
 });
 
