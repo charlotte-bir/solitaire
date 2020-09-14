@@ -81,7 +81,12 @@ abstract class Controller {
     }
 
     public function sendResponse() {
-        header('Content-Type: text/html', false, 200);
+        //header('Content-Type: text/html', false, 200);
+        header('Access-Control-Allow-Origin: *http://127.0.0.1:3306');
+        header('Access-Control-Allow-Headers: *');
+        header('Access-Control-Allow-Headers: GET, POST, PATCH, OPTIONS');
+
+
         echo $this->parseTemplate;
     }
 }

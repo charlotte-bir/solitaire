@@ -96,7 +96,28 @@ function flipAndCount(parent){
             winMessage.style.display="block";
             firework.style.display="block";
             clearInterval(interval);
+            // c'est la que ca se passe
+            const xhr = new XMLHttpRequest();
+            const uri = 'http://solitaire.local/players';
+            const datas = {
+                name: 'Le jooueur',
+                time: '00.13.20'
+            }
+            // Definir les en-tetes de la requete
+            xhr.open('post', uri);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+            xhr.onload = () => {
+                // your logic hereafter request was completed
+            }
+            // Envoyer la requete elle meme
+            xhr.send(JSON.stringify(datas))
         }
+
+        const trigger = document.getElementById('fakeBackend')
+        trigger.addEventListener(
+            'click',
+            send
+        )
     }  
 }
 
