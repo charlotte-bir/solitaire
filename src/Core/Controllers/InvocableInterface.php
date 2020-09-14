@@ -1,4 +1,4 @@
 <?php
-interface InvocableInterface {
+interface InvocableInterface{
     public function invoke();
 }

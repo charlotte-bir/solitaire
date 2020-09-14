@@ -3,76 +3,74 @@
  * src/Http/Request.php
  * @author ADRAR - Sept. 2020
  * @version 1.0.0
- * Récupère les infos d'une requête HTTP
+ *  Récupère les informations d'une requête HTTP
  */
 class Request {
     /**
      * @var string $requestType
-     * Type de la requête HTTP : GET | POST | PUT | DELETE | PATCH
+     *  Type de la requête HTTP : GET | POST | PUT | DELETE | PATCH
      */
     private $requestType;
 
     /**
      * @var array $requestParams
-     * Collection des parametres de la requête HTTP (QueryString)
+     *  Collection des paramètres de la requête HTTP (QueryString)
      */
     private $requestParams;
 
     /**
-     * @var  string $requestURI
-     * URI qui a conduit jusqu'a index.php
-     */
-    private $requestURI;
-
-    /**
      * @var string $controllerName
-     * Nom du controleur a instancier
+     *  Nom du contrôleur à instancier
      */
     private $controllerName;
 
-
     /**
      * @var string $controller
-     * Nom de la class a instancier
+     *  Nom de la classe à instancier
      */
     private $controller;
 
     /**
+     * @var string $requestURI
+     *  URI qui a conduit jusqu'à index.php
+     */
+    private $requestURI;
+
+    /**
      * @var string $fallback
-     * controleur par defaut a afficher si aucun controleur n'a ete trouvé
+     * Contrôleur par défaut si aucun contrôleur n'a été trouvé
      */
     private $fallback;
 
     /**
-     * @var array $routes
+     * @var array $route
      * Contient les "routes" de l'application
      */
-    private $routes = [
+    private $routes=[
         [
-            'path' => '/players',
-            'httpMethod' => 'GET',
-            'controller' => 'Players',
-            'method' => 'bestof'
+            'path'=>'/players',
+            'httpMethod'=>'GET',
+            'controller'=>'Players',
+            'method'=>'bestOf'
         ],
         [
-            'path' => '/players',
-            'httpMethod' => 'POST',
-            'controller' => 'Players',
-            'method' => 'addPlayer'
+            'path'=>'/players',
+            'httpMethod'=>'POST',
+            'controller'=>'Players',
+            'method'=>'addPlayer'
         ]
     ];
 
-    public function __construct( string $fallback = null) {
+    public function __construct(string $fallback = null) {
         $this->requestType = $_SERVER['REQUEST_METHOD'];
         $this->requestParams = $_GET;
 
-        //on travaille avec des URI
-        $this->requestURI = $_SERVER['REQUEST_URI'];
+        $this->requestURI=$_SERVER['REQUEST_URI'];
         $this->_traiterURI();
 
-        $this->fallback = $fallback;
-        
-        //$this->_setControllerName();// defini le nom du fichier qui contient le controleur
+        $this->fallback=$fallback;
+
+        // $this->_setControllerName(); // Définit le nom du fichier qui contient le contrôleur
     }
 
     public function getRequestType(): string {
@@ -81,9 +79,11 @@ class Request {
 
     public function getRequestParams(): string {
         $output = '';
+
         foreach ($this->requestParams as $requestParam => $value) {
             $output .= $requestParam . ' : ' . $value . "<br>";
         }
+
         return $output;
     }
 
@@ -95,14 +95,10 @@ class Request {
         return $this->controller;
     }
 
-
-
     private function _setControllerName() {
         if (array_key_exists('controller', $this->requestParams)) {
-            $name = $this->requestParams['controller']; //recupere la valeur associé a la cle controller
+            $name = $this->requestParams['controller']; // Récupère la valeur associée à la clé controller
             $this->controllerName = ucfirst($name) . '.php';
-            // pareil que
-            //$this->controllerName = ucfirst($this->requestParams['controller']) . '.php';
             if (file_exists(__DIR__ . '/../../Controllers/' . $this->controllerName)) {
                 $this->controller = ucfirst($name);
             } else {
@@ -111,28 +107,25 @@ class Request {
             }
             
         } else {
-            $this->controllerName = 'NotFound.php'; //fallback (par defaut, se sera NotFound.php)
+            $this->controllerName = 'NotFound.php'; // Fallback (par défaut, ce sera NotFound.php)
             $this->controller = 'NotFound';
         }
     }
 
-    private function _traiterURI() {
-        $laRoute = null;
+    private function _traiterURI(){
+        $laRoute=null;
         foreach ($this->routes as $route) {
-            if ($this->requestURI === $route['path'] && $this->requestType === $route['httpMethod']) {
-                $laRoute= $route;
+            if($this->requestURI === $route['path'] && $this->requestType === $route['httpMethod']){
+                $laRoute=$route;
                 break;
             }
         }
-
-        
-        // Si on a trouvé la route...
-        if ($laRoute) {
+        if($laRoute){
             $this->controllerName = $laRoute['controller'] . '.php';
             $this->controller = $laRoute['controller'];
-            // Pauvre implementation de la methode a utiliser dans le controleur
-            $_GET['method'] = $laRoute['method'];
-        } else {
+            // implémentation de la méthode à utiliser dans le contrôleur
+            $_GET["method"]= $laRoute['method'];
+        }else{
             if (!is_null($this->fallback)) {
                 $this->controllerName = $this->fallback . ".php";
                 $this->controller = $this->fallback;
@@ -141,5 +134,6 @@ class Request {
                 $this->controller = "NotFound";
             } 
         }
+
     }
 }

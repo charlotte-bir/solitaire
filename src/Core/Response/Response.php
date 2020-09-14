@@ -1,6 +1,35 @@
 <?php
 /**
  * src/Core/Response/Response.php
- * Abstraction de Response
+ * @author ADRAR - Sept. 2020
+ * @version 1.0.0
+ *  
  */
-abstract class Response
+abstract class Response {
+
+    /**
+     * @var string $httpHeaders
+     */
+    protected $httpHeaders;
+
+    /**
+     * @var string $content
+     */
+    protected $content;
+
+
+    public function send(){
+
+    }
+
+    protected function addHeaders():string{
+
+    }
+
+    protected function sendHeaders(){
+
+    }
+
+    public function setContent(){}
+
+}

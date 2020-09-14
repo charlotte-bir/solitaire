@@ -1,7 +1,7 @@
 <?php
 /**
  * src/Controllers/Views/notfound.view.php
- * Générer la vue pour le controleur NotFound
+ *  Générer la Vue pour le contrôleur NotFound
  */
 ?>
 <!doctype html>
@@ -17,3 +17,4 @@
             ou n'a pas pu être chargée.
         </p>
     </body>
+</html>

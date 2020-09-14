@@ -1,103 +1,98 @@
 <?php
 /**
- * src/Controllers/Players.php
- * @author ADRAR - Sept.2020
+ * src/Contollers/Players.php
+ * @author ADRAR - Sept. 2020
  * @version 1.0.0
- * Controleur pour la gestion des joueurs du solitaire
+ *  Contrôleur pour la gestion des joueurs du Solitaire
  */
 require_once(__DIR__ . '/../Core/Controllers/Controller.php');
 require_once(__DIR__ . '/../Repositories/PlayerRepository.php');
 require_once(__DIR__ . '/../Core/Controllers/InvocableInterface.php');
 
-final class Players extends Controller implements InvocableInterface {
+final class Players extends Controller implements InvocableInterface{
 
     /**
      * @var PlayerRepository $repository
-     * Depot des donnees des joueurs
+     * Dépôt des données des joueurs
      */
     private $repository;
+
     /**
      * @var string $title
-     * Titre qui sera passé à la vue
+     *  Titre qui sera passé à la vue
      */
-   private $title;
+    private $title = 'Hall of Fame';
 
-   /**
-     * @var string $title
-     * Sous-titre qui sera passé à la vue
-     */
-   private $subTitle;
+    private $subtitle;
 
-   
-   public function __construct(){
-        $this->title = 'Hall of Fame';
-      
-       // Instancier le depot de données
-       $this->repository = new PlayerRepository();
-   }
 
-   public function bestof() {
-       $this->view = __DIR__ . '/Views/players.view.php';
-       $this->renderView();
-   }
+    public function __construct(){
 
-   public function onePlayer() {
-        $this->view = __DIR__ . '/Views/player.view.php';
-        $this->renderView();
-   }
+        // Instancier le dépôt des données
+        $this->repository=new PlayerRepository();
+    }
 
-   public function addPlayer(){
-        $player = $this->repository->save();
-        
+    public function addPlayer(){
+        $player=$this->repository->save();
         $this->view = __DIR__ . '/Views/add.json.php';
         $this->renderView();
-   }
+    }
 
-   public function invoke(array $args = []) {
-       $method = array_key_exists('method', $_GET) ? $_GET['method'] : 'bestof';
+    public function bestOf(){
+        $this->view = __DIR__ . '/Views/players.view.php';
+        $this->renderView();
+    }
+
+    public function onePlayer(){
+        $this->view = __DIR__ . '/Views/player.view.php';
+        $this->renderView();
+    }
+
+    public function invoke(array $args = []) {
+        $method = array_key_exists('method',$_GET)? $_GET['method']:'bestOf';
         call_user_func_array(
             [
                 $this,
                 $method
-            ], // Le nom de la methode ($method) de l'objet courant ($this)
-            $args // Les parametres eventuels a transmettre a cette methode
+            ], // nom de la méthode ($method) de l'objet courrant ($this)
+            $args // les paramètres éventuels à transmettre à cette méthode
         );
-   }
-   public function getRepository(): PlayerRepository {
-       return $this->repository;
-   }
+    }
 
+    public function getRepository():PlayerRepository{
+        return $this->repository;
+    }
 
-   /**
-    * Défini la valeur de l'attribut privé "title"
-    * avec la valeur du paramètre "title" transmis
-    * => setter
-    */
-   public function setTitle(string $title) {
-       if (is_numeric($title)){
-           die('pas de valeur numérique');
-       } 
-       
-       $this->title = $title;
-   }
+    /**
+     * Définit la valeur de l'attribut privé "title"
+     *  avec la valeur du paramètre "title" transmis
+     * => setter
+     */
+    public function setTitle(string $title) {
+        if (is_numeric($title)) {
+            die('T\'es lourd ou quoi, on a dit string !');
+        }
 
-   /**
-    * Retourne la valeur "title" de l'objet courant (this)
-    * => getter
-    */
-   public function getTitle(): string{
-       return $this->title;
-   }
+        $this->title = $title;
+    }
 
-   public function setSubTitle(string $subTitle){
-       $this->subTitle = $subTitle;
-   }
+    /**
+     * Retourne la valeur "title" de l'objet courant (this)
+     *  => getter
+     */
+    public function getTitle(): string {
+        return $this->title;
+    }
 
-   public function getSubTitle(): string{
-       return $this->subTitle;
-   }
+    public function setSubTitle(string $subtitle) {
+        $this->subtitle = $subtitle;
+    }
 
-   public function htmlTitle(): string {
-       return '<h1>' .$this->title . '</h1>' . '<h2>' . $this->subTitle . '</h2>';
-   }
+    public function getSubtitle(): string {
+        return $this->subtitle;
+    }
+
+    public function htmlTitles(): string {
+        return '<h1 class="my-title-class">' . $this->title . '</h1>' . '<h2>' . $this->subtitle . '</h2>';
+    }
 }
