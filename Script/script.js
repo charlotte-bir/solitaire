@@ -10,15 +10,6 @@ function cardGeneration(){
     return number;
 }
 
-//fonction de récupération des cartes empilées à déplacer
-function getNextSiblings(element){
-    var arraySib = [];
-    while ( element = element.nextElementSibling ){
-        arraySib.push(element);
-    }
-    return arraySib;
-}
-
 //tableau servant à appliquer les classes et les attributs à chaque carte
 const cardCorrespondance=[
     ["ace_clubs",1,"black"],
@@ -75,73 +66,8 @@ const cardCorrespondance=[
     ["king_diamonds",13,"red"]
 ]
 
-let firework=document.querySelector(".pyro");
-
-//nombre de cartes retournées en début de partie (24 dans la pioches + 7 dans les colonnes = 31)
-let frontSideCardsCount=31;
-
-//récupération du message de fin de jeu
-let winMessage=document.querySelector("#winMessage");
-
 //récupération des 7 emplacements sur le tapis de jeu
 let colomns=document.querySelectorAll("#bottom>div");
-
-//retournement de la carte qui était sous la movingCard si elle était face cachée et incrémentation du nombre de cartes retournées
-function flipAndCount(parent){
-    if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){           
-        makeDraggable(parent.lastElementChild);
-        parent.lastElementChild.lastElementChild.style.display="none";
-        frontSideCardsCount++;
-        if(frontSideCardsCount==52){
-            winMessage.style.display="block";
-            firework.style.display="block";
-            clearInterval(interval);
-        }
-    }  
-}
-
-//déplacement et positionnement en cascade de la ou des carte(s) déplacée(s) 
-function placeMovingCard(origin,margin,element){
-    let appendDestination;
-    if(origin=="cards"){
-        appendDestination=element.parentElement;
-    }else if(origin=="colomns"){
-        appendDestination=element;
-    }
-    if(movingCard==movingCard.parentElement.lastElementChild){
-        movingCard.style.marginTop=margin+"px";
-        appendDestination.appendChild(movingCard);
-    }else{
-        let nextSiblings=getNextSiblings(movingCard);
-        movingCard.style.marginTop=margin+"px";
-        appendDestination.appendChild(movingCard);
-        nextSiblings.forEach(sibling => {
-            margin+=20;
-            sibling.style.marginTop=margin+"px";
-            appendDestination.appendChild(sibling);
-        });
-    }
-}
-
-//poser un roi dans une case vide
-colomns.forEach(element => {
-    element.addEventListener('dragover', function(e) {
-        e.preventDefault(); // Annule l'interdiction de drop
-    });
-    element.addEventListener('drop', function(e) {
-        e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
-        if(movingCard.className.includes("king") && !element.lastElementChild){
-            startChrono();
-            let margin=0;
-            let parent=movingCard.parentNode;
-            placeMovingCard("colomns",margin,element);
-            flipAndCount(parent);
-        }  
-    });
-});
-        
-//variable pour stocker la carte en mouvement
-let movingCard;
 
 //fonction pour rendre une carte déplaçable
 function makeDraggable(element){
@@ -182,6 +108,62 @@ colomns.forEach(element => {
         }
     });
 });
+
+//récupération des cartes dans la donne
+let donneCards=document.querySelectorAll("#donne>div");
+
+//afficher le dos de toutes les cartes dans la donne
+donneCards.forEach(element => {
+    element.lastElementChild.style.display="block";
+});
+
+//récupération de la donne et de la fausse
+let donne=document.querySelector("#donne");
+let fausse=document.querySelector("#fausse");
+
+//gestion du passages des cartes entre la donne et la fausse et retournage des cartes
+donne.addEventListener('click',function(){
+    startChrono();
+    if(donne.lastElementChild){
+        let card=donne.lastElementChild;
+        card.firstElementChild.style.display="none";
+        makeDraggable(card);
+        fausse.appendChild(card);
+    }else{
+        let fausseCards=document.querySelectorAll("#fausse>div");
+        for (let index = fausseCards.length-1; index >=0; index--) {
+            fausseCards[index].firstElementChild.style.display="block";
+            fausseCards[index].setAttribute("draggable","false");
+            donne.appendChild(fausseCards[index]);
+        }
+    }
+});
+
+//variable pour stocker la carte en mouvement
+let movingCard;
+
+//déplacement et positionnement en cascade de la ou des carte(s) déplacée(s) 
+function placeMovingCard(origin,margin,element){
+    let appendDestination;
+    if(origin=="cards"){
+        appendDestination=element.parentElement;
+    }else if(origin=="colomns"){
+        appendDestination=element;
+    }
+    if(movingCard==movingCard.parentElement.lastElementChild){
+        movingCard.style.marginTop=margin+"px";
+        appendDestination.appendChild(movingCard);
+    }else{
+        let nextSiblings=getNextSiblings(movingCard);
+        movingCard.style.marginTop=margin+"px";
+        appendDestination.appendChild(movingCard);
+        nextSiblings.forEach(sibling => {
+            margin+=20;
+            sibling.style.marginTop=margin+"px";
+            appendDestination.appendChild(sibling);
+        });
+    }
+}
 
 //récupération de toutes les cartes du jeu
 let cards=document.querySelectorAll(".card");
@@ -257,34 +239,54 @@ cards.forEach(element => {
     });
 });
 
-//récupération des cartes dans la donne
-let donneCards=document.querySelectorAll("#donne>div");
 
-//afficher le dos de toutes les cartes dans la donne
-donneCards.forEach(element => {
-    element.lastElementChild.style.display="block";
-});
-
-//récupération de la donne et de la fausse
-let donne=document.querySelector("#donne");
-let fausse=document.querySelector("#fausse");
-
-//gestion du passages des cartes entre la donne et la fausse et retournage des cartes
-donne.addEventListener('click',function(){
-    startChrono();
-    if(donne.lastElementChild){
-        let card=donne.lastElementChild;
-        card.firstElementChild.style.display="none";
-        makeDraggable(card);
-        fausse.appendChild(card);
-    }else{
-        let fausseCards=document.querySelectorAll("#fausse>div");
-        for (let index = fausseCards.length-1; index >=0; index--) {
-            fausseCards[index].firstElementChild.style.display="block";
-            fausseCards[index].setAttribute("draggable","false");
-            donne.appendChild(fausseCards[index]);
-        }
+//fonction de récupération des cartes empilées à déplacer
+function getNextSiblings(element){
+    var arraySib = [];
+    while ( element = element.nextElementSibling ){
+        arraySib.push(element);
     }
+    return arraySib;
+}
+
+//retournement de la carte qui était sous la movingCard si elle était face cachée et incrémentation du nombre de cartes retournées
+function flipAndCount(parent){
+    if(parent.lastElementChild && parent.lastElementChild.lastElementChild.style.display!="none" && parent!=fausse){           
+        makeDraggable(parent.lastElementChild);
+        parent.lastElementChild.lastElementChild.style.display="none";
+        frontSideCardsCount++;
+        if(frontSideCardsCount==52){
+            winMessage.style.display="block";
+            firework.style.display="block";
+            clearInterval(interval);
+        }
+    }  
+}
+
+let firework=document.querySelector(".pyro");
+
+//nombre de cartes retournées en début de partie (24 dans la pioches + 7 dans les colonnes = 31)
+let frontSideCardsCount=31;
+
+//récupération du message de fin de jeu
+let winMessage=document.querySelector("#winMessage");
+
+
+//poser un roi dans une case vide
+colomns.forEach(element => {
+    element.addEventListener('dragover', function(e) {
+        e.preventDefault(); // Annule l'interdiction de drop
+    });
+    element.addEventListener('drop', function(e) {
+        e.preventDefault(); // Cette méthode est toujours nécessaire pour éviter une éventuelle redirection inattendue
+        if(movingCard.className.includes("king") && !element.lastElementChild){
+            startChrono();
+            let margin=0;
+            let parent=movingCard.parentNode;
+            placeMovingCard("colomns",margin,element);
+            flipAndCount(parent);
+        }  
+    });
 });
 
 //récupération des slots
